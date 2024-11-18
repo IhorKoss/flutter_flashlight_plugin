@@ -1,5 +1,7 @@
 import 'package:torch_light/torch_light.dart';
 import 'dart:io' show Platform;
+import 'package:flutter/material.dart';
+
 
 class IhorFlashlightPlugin {
   static bool _isFlashlightOn = false;
@@ -28,18 +30,34 @@ class IhorFlashlightPlugin {
     try {
       return await TorchLight.isTorchAvailable();
     } catch (e) {
-      print('Помилка перевірки доступності ліхтарика: $e');
+      print('Помилка: $e');
       return false;
     }
   }
 
-  static getPlatformVersion () async {
-    if (Platform.isAndroid) {
-      return 'Android';
-    } else if (Platform.isIOS) {
-      return 'iOS is not supported';
+  void getPlatformVersion(BuildContext context) {
+    if (Platform.isIOS) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Попередження'),
+            content: Text('Функціонал ліхтарика не підтримується на iOS.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else if (Platform.isAndroid) {
+      print('Android');
     } else {
-      return 'Unknown';
+      print('Unknown');
     }
   }
 }
